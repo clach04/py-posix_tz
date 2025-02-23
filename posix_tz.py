@@ -31,8 +31,6 @@ def parse_tz(s):
     #import pdb; pdb.set_trace()
     if s.upper() in ('UTC', 'GMT', 'GMT0', 'GMT-0', 'GMT+0'):
         return tzd_tuple('UTC', 0, None, None, None, None)
-    elif s in ('PST8PDT,M3.2.0,M11.1.0', 'PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00'):
-        return tzd_tuple('PST8PDT', -8 * 60 * 60, 'PDT', parse_mstr('M3.2.0'), parse_mstr('M11.1.0'), -7 * 60 * 60)
     else:
         ss = s.split(',')
         if len(ss) == 1:
