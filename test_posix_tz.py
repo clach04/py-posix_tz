@@ -54,10 +54,10 @@ class UsaLosAngelesOffsets(MyBaseTestCase):
         self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_offset(self):
-        assert_equal(8 * 60 * 60, self.parsed.offset)
+        assert_equal(-8 * 60 * 60, self.parsed.offset)
 
     def test_dstoffset(self):
-        assert_equal(9 * 60 * 60, self.parsed.dst_offset)
+        assert_equal(-7 * 60 * 60, self.parsed.dst_offset)
 
 class UsaLosAngeles(MyBaseTestCase):
     def __init__(self):
@@ -80,10 +80,10 @@ class UsaNewYorkOffsets(MyBaseTestCase):
         self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
     def test_offset(self):
-        assert_equal(5 * 60 * 60, self.parsed.offset)
+        assert_equal(-5 * 60 * 60, self.parsed.offset)
 
     def test_dstoffset(self):
-        assert_equal(6 * 60 * 60, self.parsed.dst_offset)
+        assert_equal(-4 * 60 * 60, self.parsed.dst_offset)
 
 class UsaNewYork(MyBaseTestCase):
     def __init__(self):
@@ -122,7 +122,7 @@ for test_class in (  # FIXME, automate this
     UsaLosAngeles_2am,
     #UsaLosAngeles_2am_end_only,  # TODO implement
     IndiaOffsets,
-    #UsaNewYorkOffsets,
+    UsaNewYorkOffsets,
     #UsaNewYork,
     #UsaNewYork_2am,
     ):
