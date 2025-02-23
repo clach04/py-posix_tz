@@ -29,30 +29,30 @@ name_offset_re = re.compile(r"^([A-Z]+)([+-]?)(\d+)(?::(\d+))?(?::(\d+))?")  # T
 tzd_tuple = namedtuple('tzd', ('name', 'offset', 'dst_name', 'start', 'end', 'dst_offset'))  # offsets are seconds
 def parse_tz(s):
     #import pdb; pdb.set_trace()
-    if s.upper() in ('UTC', 'GMT', 'GMT0', 'GMT-0', 'GMT+0'):
-        return tzd_tuple('UTC', 0, None, None, None, None)
-    else:
-        ss = s.split(',')
-        if len(ss) == 1:
-            # no DST
-            #import pdb; pdb.set_trace()
-            x = re.match(name_offset_re, s)
+    ss = s.split(',')
+    if len(ss) == 1:
+        # no DST
+        #import pdb; pdb.set_trace()
+        x = re.match(name_offset_re, s)
+        if x:
             #tzname, sign, d_hour, d_min, d_sec = re.match(name_offset_re, s).groups(default=0)  # Cpython
             tzname, sign, d_hour, d_min, d_sec = x.group(1), x.group(2), x.group(3) or 0, x.group(4) or 0, x.group(5) or 0  # micropython
             offset = (int(d_hour) * 60 + int(d_min)) * 60 + int(d_sec)
             timezone = offset * (1 if sign == "-" else -1)
-            return tzd_tuple(tzname, timezone, None, None, None, None)
-        if len(ss) == 3:
-            # FIXME refactor, remove duplication
-            x = re.match(name_offset_re, ss[0])
-            tzname, sign, d_hour, d_min, d_sec = x.group(1), x.group(2), x.group(3) or 0, x.group(4) or 0, x.group(5) or 0  # micropython
-            offset = (int(d_hour) * 60 + int(d_min)) * 60 + int(d_sec)
-            timezone = offset * (1 if sign == "-" else -1)
-            # TODO parse DST name and offset, for now default
-            return tzd_tuple(tzname, timezone, '?DST?', parse_mstr(ss[1]), parse_mstr(ss[2]), timezone + 1 * 60 * 60)
         else:
-            NotImplementedError('FIXME for %r)' %s)
-    raise NotImplementedError('for %r (or potentially a bad value...)' %s)
+            tzname = s
+            timezone = 0
+        return tzd_tuple(tzname, timezone, None, None, None, None)
+    if len(ss) == 3:
+        # FIXME refactor, remove duplication
+        x = re.match(name_offset_re, ss[0])
+        tzname, sign, d_hour, d_min, d_sec = x.group(1), x.group(2), x.group(3) or 0, x.group(4) or 0, x.group(5) or 0  # micropython
+        offset = (int(d_hour) * 60 + int(d_min)) * 60 + int(d_sec)
+        timezone = offset * (1 if sign == "-" else -1)
+        # TODO parse DST name and offset, for now default
+        return tzd_tuple(tzname, timezone, '?DST?', parse_mstr(ss[1]), parse_mstr(ss[2]), timezone + 1 * 60 * 60)
+    else:
+        NotImplementedError('FIXME for %r)' %s)
 
 def determine_change(p, year):
     """
