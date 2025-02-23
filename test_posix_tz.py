@@ -43,6 +43,46 @@ class UtcOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
+class GmtOffsets(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = posix_tz.parse_tz('GMT')
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
+class GmtZeroOffsets(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = posix_tz.parse_tz('GMT0')
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
+class GmtMinusZeroOffsets(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = posix_tz.parse_tz('GMT-0')
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
+class GmtPlusZeroOffsets(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = posix_tz.parse_tz('GMT+0')
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
 class IndiaOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = posix_tz.parse_tz('IST-5:30')
@@ -121,6 +161,10 @@ for x in dir():
 """
 for test_class in (  # FIXME, automate this
     UtcOffsets,
+    GmtOffsets,
+    GmtZeroOffsets,
+    GmtMinusZeroOffsets,
+    GmtPlusZeroOffsets,
     UsaLosAngelesOffsets,
     UsaLosAngeles,
     UsaLosAngeles_2am,
