@@ -17,7 +17,7 @@ def parse_mstr(s):
     ss = s.split('/')
     m = ss[0]
     if len(ss) == 2:
-        t = s[1]
+        t = ss[1]
     else:
         t = '2:00:00'
     month, occur, day = map(int, m[1:].split('.'))  # TODO catch non-int errors

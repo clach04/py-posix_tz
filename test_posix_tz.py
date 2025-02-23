@@ -5,8 +5,12 @@ import time
 
 import posix_tz
 
-def assert_equal(a, b):
-    assert a == b, '%r != %r' % (a, b)
+def assert_equal(a, b, fatal=True):
+    try:
+        assert a == b, '%r != %r' % (a, b)
+    except AssertionError:
+        if fatal:
+            raise
 
 def assert_is_none(a):
     assert a is None, '%r != %r' % (a, None)
@@ -123,8 +127,8 @@ for test_class in (  # FIXME, automate this
     #UsaLosAngeles_2am_end_only,  # TODO implement
     IndiaOffsets,
     UsaNewYorkOffsets,
-    #UsaNewYork,
-    #UsaNewYork_2am,
+    UsaNewYork,
+    UsaNewYork_2am,
     ):
         x = test_class()
         x.run()
