@@ -10,6 +10,8 @@ import re
 import time
 
 
+global_tzd = None  # or UTC
+
 m_tuple = namedtuple('m', ('month', 'occur', 'day', 'hour', 'min', 'sec'))
 def parse_mstr(s):
     if s[0] != 'M':
@@ -95,6 +97,27 @@ def determine_change(p, year):
     
     tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython
     return tr  # NOTE for CPython, DST start time could be off an hour... Fine in Micropython
+
+
+def set_tz(tz):
+    global global_tzd
+    global_tzd = parse_tz(tz)
+
+def localtime(n=None, tzd=None):
+    if n is None:
+        n = time.time()
+    tzd = tzd or global_tzd
+
+    if tzd:
+        time_tuple = time.gmtime(n)
+        year = time_tuple[0]  # FIXME, assume DST never starts/ends on first/last day of a year - probably a safe thing todo
+        start_date, end_date = determine_change(tzd.start, year), determine_change(tzd.end, year)
+        if start_date < n < dst_end:
+            n += tzd.dst_offset
+        else:
+            n += tzd.offset
+    # else assume UTC/GMT0
+    return time.localtime(n)
 
 def debug_localtime():
     t = time.time()
