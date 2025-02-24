@@ -8,6 +8,31 @@ Primarily focused on MicroPython where memory/storage is restricted. If you have
 
 The timezone support that POSIX TZ offers (in general, not specifically about this package) is limited to now and the future. It has no idea about previous rules, there is only one rule. If new rules for a timezone are created, a new TZ will need to be created and deployed.
 
+## MicroPython Usage
+
+Assuming already installed, and device on network:
+
+```python
+import ntptime
+
+import posix_tz
+
+ntptime.settime()
+
+print(time.time())
+print(time.localtime())
+print(time.gmtime())
+print('')
+
+print('%r' % posix_tz.global_tzd)
+print('set TZ')
+posix_tz.set_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')  # Los Angeles rule, valid as of 2025 (and previous few years)
+print('%r' % posix_tz.global_tzd)
+print(posix_tz.localtime())
+```
+
+
+
 ## Resources
 
 ### Documentation on rules
