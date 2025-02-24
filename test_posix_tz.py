@@ -168,7 +168,7 @@ for test_class in (  # FIXME, automate this
     UsaLosAngelesOffsets,
     UsaLosAngeles,
     UsaLosAngeles_2am,
-    #UsaLosAngeles_2am_end_only,  # TODO implement
+    UsaLosAngeles_2am_end_only,
     IndiaOffsets,
     UsaNewYorkOffsets,
     UsaNewYork,
