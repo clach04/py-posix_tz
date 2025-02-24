@@ -103,6 +103,7 @@ def set_tz(tz):
     global global_tzd
     global_tzd = parse_tz(tz)
 
+_localtime_cache = {}  # rather than require functool lru (which is not built into MicroPython), cache manually with no clean up. Assume use case doesn't span hundreds of years
 def localtime(n=None, tzd=None):
     if n is None:
         n = time.time()
@@ -111,7 +112,12 @@ def localtime(n=None, tzd=None):
     if tzd:
         time_tuple = time.gmtime(n)
         year = time_tuple[0]  # FIXME, assume DST never starts/ends on first/last day of a year - probably a safe thing todo
-        start_date, end_date = determine_change(tzd.start, year), determine_change(tzd.end, year)
+        #start_date, end_date = _localtime_cache.get((tzd.start, year), determine_change(tzd.start, year)), _localtime_cache.get((tzd.end, year), determine_change(tzd.end, year)
+        try:
+            start_date, end_date = _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)]
+        except KeyError:
+            start_date, end_date = determine_change(tzd.start, year), determine_change(tzd.end, year)
+            _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)] = start_date, end_date
         if start_date < n < dst_end:
             n += tzd.dst_offset
         else:
