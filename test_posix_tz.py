@@ -5,6 +5,7 @@ import time
 
 import posix_tz
 
+
 def assert_equal(a, b, fatal=True):
     try:
         assert a == b, '%r != %r' % (a, b)
@@ -108,10 +109,10 @@ class UsaLosAngeles(MyBaseTestCase):
         self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025))
-        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025))
-        canon_start_date = (2025, 3, 9, 2, 0, 0, 6, 68)
-        canon_end_date = (2025, 11, 2, 2, 0, 0, 6, 306)
+        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        canon_start_date = (2025, 3, 9, 10, 0, 0, 6, 68)
+        canon_end_date = (2025, 11, 2, 9, 0, 0, 6, 306)
         assert_equal(canon_end_date, end_date)
         assert_equal(canon_start_date, start_date)
 
@@ -134,14 +135,14 @@ class UsaNewYork(MyBaseTestCase):
         self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025))
-        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025))
-        canon_start_date = (2025, 3, 9, 2, 0, 0, 6, 68)
-        canon_end_date = (2025, 11, 2, 2, 0, 0, 6, 306)
+        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        canon_start_date = (2025, 3, 9, 7, 0, 0, 6, 68)
+        canon_end_date = (2025, 11, 2, 6, 0, 0, 6, 306)
         assert_equal(canon_end_date, end_date)
         assert_equal(canon_start_date, start_date)
 
-class UsaNewYork_2am(UsaLosAngeles):
+class UsaNewYork_2am(MyBaseTestCase):
     def __init__(self):
         self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
 
@@ -149,6 +150,8 @@ class UsaLosAngeles_2am_end_only(UsaLosAngeles):
     def __init__(self):
         self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0/2:00:00')
 
+
+# TODO test posix_tz.localtime()
 
 """
 for x in dir():

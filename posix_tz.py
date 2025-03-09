@@ -56,7 +56,7 @@ def parse_tz(s):
     else:
         NotImplementedError('FIXME for %r)' %s)
 
-def determine_change(p, year):
+def determine_change(p, year, offset):
     """
     Mm.n.d format, where:
 
@@ -74,8 +74,12 @@ def determine_change(p, year):
           * 0 - Sunday
           * 2:00:00 - 2am
       * M11.1.0/2:00:00
+
+    offset - offsets are seconds
     """
     month, occur, day, h, min, sec = p
+    min_offset = offset // 60
+    h, min = (h - (min_offset // 60)), (min - (min_offset % 60))
 
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if ((((year % 4) == 0) and ((year % 100) != 0)) or (year % 400) == 0):
@@ -95,7 +99,7 @@ def determine_change(p, year):
     if dom > month_days[month - 1]:
         dom -= 7
     
-    tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython
+    tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the GMT0 time
     return tr  # NOTE for CPython, DST start time could be off an hour... Fine in Micropython
 
 
@@ -116,7 +120,7 @@ def localtime(n=None, tzd=None):
         try:
             start_date, end_date = _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)]
         except KeyError:
-            start_date, end_date = determine_change(tzd.start, year), determine_change(tzd.end, year)
+            start_date, end_date = determine_change(tzd.start, year, tzd.offset), determine_change(tzd.end, year, tzd.dst_offset)
             _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)] = start_date, end_date
         if start_date < n < end_date:
             n += tzd.dst_offset
