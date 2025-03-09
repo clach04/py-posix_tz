@@ -118,7 +118,7 @@ def localtime(n=None, tzd=None):
         except KeyError:
             start_date, end_date = determine_change(tzd.start, year), determine_change(tzd.end, year)
             _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)] = start_date, end_date
-        if start_date < n < dst_end:
+        if start_date < n < end_date:
             n += tzd.dst_offset
         else:
             n += tzd.offset
