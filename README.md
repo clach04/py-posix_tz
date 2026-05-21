@@ -17,7 +17,7 @@ import ntptime
 
 import posix_tz
 
-ntptime.settime()
+ntptime.settime()  # standard micropython sets clock to UTC (GMT0)
 
 print(time.time())
 print(time.localtime())
