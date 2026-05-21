@@ -13,7 +13,7 @@ The timezone support that POSIX TZ offers (in general, not specifically about th
 Assuming already installed, and device on network:
 
 ```python
-import ntptime
+import ntptime  # https://github.com/micropython/micropython-lib/blob/master/micropython/net/ntptime/ntptime.py
 
 import posix_tz
 
