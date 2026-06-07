@@ -15,20 +15,20 @@ Assuming already installed, and device on network:
 ```python
 import ntptime  # https://github.com/micropython/micropython-lib/blob/master/micropython/net/ntptime/ntptime.py
 
-import posix_tz
+from posix_tz import global_tzd, localtime, set_tz
 
 ntptime.settime()  # standard micropython sets clock to UTC (GMT0)
 
-print(time.time())
-print(time.localtime())
-print(time.gmtime())
+print('time.time() %r' % (time.time(),))
+print('time.localtime() %r' % (time.localtime(),))
+print('time.gmtime() %r' % (time.gmtime(),))
 print('')
 
-print('%r' % posix_tz.global_tzd)
+print('global_tzd %r' % (global_tzd,))
 print('set TZ')
-posix_tz.set_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')  # Los Angeles rule, valid as of 2025 (and previous few years)
-print('%r' % posix_tz.global_tzd)
-print(posix_tz.localtime())
+set_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')  # Los Angeles rule, valid as of 2025 (and previous few years)
+print('global_tzd %r' % (global_tzd,))
+print('localtime() %r' % (localtime(),))
 ```
 
 
