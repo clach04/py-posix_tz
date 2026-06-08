@@ -1,9 +1,9 @@
 # test_posix_tz does **not** use unittest, as it's not included by default with MicroPython
 # not a robust test suite, stops on errors (and under MicroPython, stops with very little context
- 
+
 import time
 
-import posix_tz
+from posix_tz import determine_change, parse_tz
 
 
 def assert_equal(a, b, fatal=True):
@@ -36,7 +36,7 @@ class MyTestCase(MyBaseTestCase):
 
 class UtcOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('UTC')
+        self.parsed = parse_tz('UTC')
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -46,7 +46,7 @@ class UtcOffsets(MyBaseTestCase):
 
 class GmtOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('GMT')
+        self.parsed = parse_tz('GMT')
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -56,7 +56,7 @@ class GmtOffsets(MyBaseTestCase):
 
 class GmtZeroOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('GMT0')
+        self.parsed = parse_tz('GMT0')
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -66,7 +66,7 @@ class GmtZeroOffsets(MyBaseTestCase):
 
 class GmtMinusZeroOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('GMT-0')
+        self.parsed = parse_tz('GMT-0')
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -76,7 +76,7 @@ class GmtMinusZeroOffsets(MyBaseTestCase):
 
 class GmtPlusZeroOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('GMT+0')
+        self.parsed = parse_tz('GMT+0')
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -86,7 +86,7 @@ class GmtPlusZeroOffsets(MyBaseTestCase):
 
 class IndiaOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('IST-5:30')
+        self.parsed = parse_tz('IST-5:30')
 
     def test_offset(self):
         assert_equal(19800, self.parsed.offset)
@@ -96,7 +96,7 @@ class IndiaOffsets(MyBaseTestCase):
 
 class UsaLosAngelesOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0')
+        self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_offset(self):
         assert_equal(-8 * 60 * 60, self.parsed.offset)
@@ -106,11 +106,11 @@ class UsaLosAngelesOffsets(MyBaseTestCase):
 
 class UsaLosAngeles(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0')
+        self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025, self.parsed.offset))
-        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        start_date = time.localtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 10, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 9, 0, 0, 6, 306)
         assert_equal(canon_end_date, end_date)
@@ -118,11 +118,11 @@ class UsaLosAngeles(MyBaseTestCase):
 
 class UsaLosAngeles_2am(UsaLosAngeles):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
+        self.parsed = parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
 
 class UsaNewYorkOffsets(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0,M11.1.0')
+        self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
     def test_offset(self):
         assert_equal(-5 * 60 * 60, self.parsed.offset)
@@ -132,11 +132,11 @@ class UsaNewYorkOffsets(MyBaseTestCase):
 
 class UsaNewYork(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0,M11.1.0')
+        self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(posix_tz.determine_change(self.parsed.start, 2025, self.parsed.offset))
-        end_date = time.localtime(posix_tz.determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        start_date = time.localtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 7, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 6, 0, 0, 6, 306)
         assert_equal(canon_end_date, end_date)
@@ -144,11 +144,11 @@ class UsaNewYork(MyBaseTestCase):
 
 class UsaNewYork_2am(MyBaseTestCase):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
+        self.parsed = parse_tz('EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
 
 class UsaLosAngeles_2am_end_only(UsaLosAngeles):
     def __init__(self):
-        self.parsed = posix_tz.parse_tz('PST8PDT,M3.2.0,M11.1.0/2:00:00')
+        self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0/2:00:00')
 
 
 # TODO test posix_tz.localtime()
