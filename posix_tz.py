@@ -144,7 +144,7 @@ def iso_like_str(tt=None, tzd=None, include_tz_if_available=True):
         tt = localtime(n=None, tzd=tzd)
     tzd = tzd or global_tzd
     if include_tz_if_available and len(tt) >= 8:
-        tm_isdst = tt[7]
+        tm_isdst = tt[8]
         if tm_isdst:
             tz_name = tzd.dst_name
         else:
