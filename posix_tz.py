@@ -66,7 +66,7 @@ def determine_change(p, year, offset):
 
     For example:
         PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00
-    
+
       * PST8PDT
       * M3.2.0/2:00:00
           * 3 - March
@@ -98,7 +98,7 @@ def determine_change(p, year, offset):
 
     if dom > month_days[month - 1]:
         dom -= 7
-    
+
     tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the GMT0 time
     return tr  # NOTE for CPython, DST start time could be off an hour... Fine in Micropython
 
@@ -112,6 +112,7 @@ def localtime(n=None, tzd=None):
     if n is None:
         n = time.time()
     tzd = tzd or global_tzd
+    tm_isdst = 0
 
     if tzd:
         time_tuple = time.gmtime(n)
@@ -124,10 +125,31 @@ def localtime(n=None, tzd=None):
             _localtime_cache[(tzd.start, year)], _localtime_cache[(tzd.end, year)] = start_date, end_date
         if start_date < n < end_date:
             n += tzd.dst_offset
+            tm_isdst = 1
         else:
             n += tzd.offset
     # else assume UTC/GMT0
-    return time.localtime(n)
+    tt = time.localtime(n)
+    # make a 9-tuple
+    if len(tt) == 8:
+        tt += (tm_isdst,)
+    return tt
+
+def iso_like_str(tt=None, tzd=None, include_tz_if_available=True):
+    """Where tt is a localtime() time tuple
+    """
+    if tt is None:
+        tt = localtime(n=None, tzd=tzd)
+    tzd = tzd or global_tzd
+    if include_tz_if_available and len(tt) >= 8:
+        tm_isdst = tt[7]
+        if tm_isdst:
+            tz_name = tzd.dst_name
+        else:
+            tz_name = tzd.name
+        return '%04d-%02d-%02d %02d:%02d:%02d %s' % (tt[0], tt[1], tt[2], tt[3], tt[4], tt[5], tz_name)
+    else:
+        return '%04d-%02d-%02d %02d:%02d:%02d' % (tt[0], tt[1], tt[2], tt[3], tt[4], tt[5])
 
 def debug_localtime():
     t = time.time()
