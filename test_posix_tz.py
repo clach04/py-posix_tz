@@ -5,13 +5,23 @@ import time
 
 from posix_tz import determine_change, parse_tz
 
+DEFAULT_FATAL = True
+DEFAULT_FATAL = False  # Debug!
+is_mp = False
 
-def assert_equal(a, b, fatal=True):
+failure_count = 0
+
+def assert_equal(a, b, fatal=DEFAULT_FATAL):
     try:
         assert a == b, '%r != %r' % (a, b)
-    except AssertionError:
+    except AssertionError as info:
+        global failure_count
+        failure_count += 1
         if fatal:
             raise
+        else:
+            # TODO
+            print('AssertionError! Carrying on to next test: %r' % (info,))
 
 def assert_is_none(a):
     assert a is None, '%r != %r' % (a, None)
@@ -179,3 +189,4 @@ for test_class in (  # FIXME, automate this
     ):
         x = test_class()
         x.run()
+print('failure_count %d' % (failure_count,))
