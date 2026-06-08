@@ -31,6 +31,8 @@ print('global_tzd %r' % (global_tzd,))
 print('localtime() %r' % (localtime(),))
 ```
 
+Show two timezones
+
 ```python
 import time
 
@@ -47,6 +49,48 @@ print('iso_like_str() %r' % (iso_like_str(localtime(n=tt, tzd=los_angeles), tzd=
 print('iso_like_str() %r' % (iso_like_str(localtime(n=tt, tzd=utc), tzd=utc),))
 print('time.localtime() %r' % (time.localtime(tt),))
 print('time.gmtime() %r' % (time.gmtime(tt),))
+```
+
+Simple world clock.
+
+```python
+import time
+
+from posix_tz import global_tzd, iso_like_str, localtime, parse_tz, set_tz, tzd_tuple
+# assume clock already set
+
+tz_list = [
+    'CST-8',  # China Standard Time
+    'IST-5:30',  # India Standard Time
+    #'CET-1CEST,M3.5.0,M10.5.0/3',  # Germany, Berlin  # FIXME
+    'CET-1CEST,M3.5.0,M10.5.0/3:00:00',  # Germany, Berlin
+    'UTC',  # Coordinated Universal Time (UTC) / GMT0
+    #'GMT0BST,M3.5.0/1,M10.5.0', # UK, London  # FIXME
+    'GMT0BST,M3.5.0/1:00:00,M10.5.0/1:00:00', # UK, London  # FIXME
+    'EST5EDT,M3.2.0,M11.1.0',  # USA/New York - 'EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00'
+    'CST6CDT,M3.2.0,M11.1.0',  # USA/Texas
+    'PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00',  # USA/Los Angeles
+]
+tzs = []
+for tz_name in tz_list:
+    print(tz_name)
+    tzs.append(parse_tz(tz_name))
+
+t_list = [
+    (2025, 1, 1, 0, 0, 0, -1, -1, -1),
+    (2026, 6, 7, 16, 46, 0, -1, -1, -1),
+    None  # determine current time
+]
+for t in t_list:
+    if t:
+        tt = time.mktime(t)
+    else:
+        tt = time.mktime(time.gmtime())
+    print(t)
+    print(tt)
+    for tz in tzs:
+        print(iso_like_str(localtime(n=tt, tzd=tz), tzd=tz))
+    print('')
 ```
 
 
