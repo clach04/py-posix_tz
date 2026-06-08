@@ -44,7 +44,7 @@ def parse_tz(s):
         else:
             tzname = s
             timezone = 0
-        return tzd_tuple(tzname, timezone, None, None, None, None)
+        return tzd_tuple(tzname, timezone, tzname, None, None, None)
     if len(ss) == 3:
         # FIXME refactor, remove duplication
         x = re.match(name_offset_re, ss[0])
@@ -77,6 +77,8 @@ def determine_change(p, year, offset):
 
     offset - offsets are seconds
     """
+    if not p:
+        return time.mktime((year, 0, 0, 0, 0, 0, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the UTC / GMT0 time
     month, occur, day, h, min, sec = p
     min_offset = offset // 60
     h, min = (h - (min_offset // 60)), (min - (min_offset % 60))

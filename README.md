@@ -31,9 +31,64 @@ print('global_tzd %r' % (global_tzd,))
 print('localtime() %r' % (localtime(),))
 ```
 
+```python
+import time
+
+from posix_tz import global_tzd, iso_like_str, localtime, parse_tz, set_tz, tzd_tuple
+# assume clock already set
+
+tt = time.mktime((2026, 6, 7, 16, 46, 0, -1, -1, -1))  # NOTE 9-tuple
+utc = parse_tz('UTC')
+los_angeles = parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
+
+print('localtime() %r' % (localtime(n=None, tzd=los_angeles),))
+print('localtime() %r' % (localtime(n=tt, tzd=los_angeles),))
+print('iso_like_str() %r' % (iso_like_str(localtime(n=tt, tzd=los_angeles), tzd=los_angeles),))
+print('iso_like_str() %r' % (iso_like_str(localtime(n=tt, tzd=utc), tzd=utc),))
+print('time.localtime() %r' % (time.localtime(tt),))
+print('time.gmtime() %r' % (time.gmtime(tt),))
+```
+
 
 
 ## Resources
+
+### Time refresher for MicroPython and Python
+
+from https://docs.micropython.org/en/latest/library/time.html#time.localtime
+
+> Convert the time secs expressed in seconds since the Epoch (see above) into an
+> 8-tuple which contains: (year, month, mday, hour, minute, second, weekday, yearday)
+> If secs is not provided or None, then the current time from the RTC is used.
+
+**NOTE** tuple with eight elements.
+
+The format of the entries in the 8-tuple are:
+
+> 1. year includes the century (for example 2014).
+> 2. month is 1-12
+> 3. mday is 1-31
+> 4. hour is 0-23
+> 5. minute is 0-59
+> 6. second is 0-59
+> 7. weekday is 0-6 for Mon-Sun
+> 8. yearday is 1-366
+
+
+Compare with:
+
+  * https://docs.python.org/3/library/time.html#time.localtime
+  * https://docs.python.org/3/library/time.html#time.mktime
+
+> (mktime) This is the inverse function of localtime().
+> Its argument is the struct_time or full 9-tuple (since the dst flag is needed; use -1 as the dst flag if it is unknown)
+> which expresses the time in local time, not UTC. It returns a floating-point number, for compatibility with time().
+
+Highlights:
+
+  * time.time() is int on esp32 Micropython, float in CPython
+  * time.localtime() is an 8-tuple in Micropython, versus 9-tuple struct/class/namedtuple in CPython (3.x) with **different** attributes
+
 
 ### Documentation on rules
 
