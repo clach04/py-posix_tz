@@ -98,7 +98,7 @@ for t in t_list:
 Combine module and tests into one file suitable for running in MicroPython WASM,
 either https://tools.simonwillison.net/micropython or command line
 
-    cp posix_tz.py concat.py
+    cp posix_tz.py concat.py  # copy /Y posix_tz.py concat.py
     rg -v -N import test_posix_tz.py >> concat.py
     micropython-wasm --memory 33554432 --fuel 200000000 concat.py
 
