@@ -197,4 +197,4 @@ for test_class in (  # FIXME, automate this
     ):
         x = test_class()
         x.run()
-print('failure_count %d' % (failure_count,))
+print('Assertion failure_count (NOT test count) %d' % (failure_count,))
