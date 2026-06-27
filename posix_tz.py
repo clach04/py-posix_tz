@@ -2,12 +2,16 @@
 # NOTE short names for space reasons
 """
 time.time() is int on esp32 Micropython, float in CPython
-time.localtime() is tuple in Micropython, struct/class/namedtuple in CPython (3.x) with different attributes
+time.localtime*=() / time.gmtime() is tuple in Micropython, struct/class/namedtuple in CPython (3.x) with different attributes
 """
 
 from collections import namedtuple
 import re
 import time
+try:
+    from calendar import timegm
+except ImportError:
+    timegm = None
 
 
 global_tzd = None  # or UTC
@@ -101,8 +105,11 @@ def determine_change(p, year, offset):
     if dom > month_days[month - 1]:
         dom -= 7
 
-    tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the GMT0 time
-    return tr  # NOTE for CPython, DST start time could be off an hour... Fine in Micropython
+    if timegm is not None:
+        tr = timegm((year, month, dom, h, min, sec, 0, 0, 0))  # CPython: mktime treats tuple as localtime :-( use calendar.timegm() or datetime(..., tzinfo=timezone.utc).timestamp()
+    else:
+        tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # MicroPython: mktime treats tuple as UTC, passing in unused 9th tuple for DST
+    return tr
 
 
 def set_tz(tz):
@@ -131,7 +138,7 @@ def localtime(n=None, tzd=None):
         else:
             n += tzd.offset
     # else assume UTC/GMT0
-    tt = time.localtime(n)
+    tt = time.gmtime(n)
     # make a 9-tuple
     if len(tt) == 8:
         tt += (tm_isdst,)
@@ -162,7 +169,7 @@ def debug_localtime():
     parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
     start_date = determine_change(parsed.start, 2025)
     end_date = determine_change(parsed.end, 2025)
-    print(time.localtime(start_date), start_date)
-    print(time.localtime(end_date), end_date)
+    print(time.gmtime(start_date), start_date)
+    print(time.gmtime(end_date), end_date)
 
 #debug_localtime()

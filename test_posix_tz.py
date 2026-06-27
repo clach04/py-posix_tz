@@ -127,8 +127,8 @@ class UsaLosAngeles(MyBaseTestCase):
         self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
-        end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.gmtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 10, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 9, 0, 0, 6, 306)
         assert_equal_timetuple(canon_end_date, end_date)
@@ -153,8 +153,8 @@ class UsaNewYork(MyBaseTestCase):
         self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
-        start_date = time.localtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
-        end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
+        start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
+        end_date = time.gmtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 7, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 6, 0, 0, 6, 306)
         assert_equal_timetuple(canon_end_date, end_date)
