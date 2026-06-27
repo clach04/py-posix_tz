@@ -2,7 +2,7 @@
 # NOTE short names for space reasons
 """
 time.time() is int on esp32 Micropython, float in CPython
-time.localtime*=() / time.gmtime() is tuple in Micropython, struct/class/namedtuple in CPython (3.x) with different attributes
+time.localtime() / time.gmtime() is tuple in Micropython, struct/class/namedtuple in CPython (3.x) with different attributes
 """
 
 from collections import namedtuple
@@ -15,6 +15,21 @@ except ImportError:
 
 
 global_tzd = None  # or UTC
+
+def mktime(t):
+    """Replacement / override to make MicroPython and CPython work for this TZ lib
+    t is a tuple.
+    """
+    #print(t)  # time.gmtime(n)
+    year, month, dom, h, min, sec = t[0], t[1], t[2], t[3], t[4], t[5]
+    if 1 > month or month > 12:
+        month = 1  # TODO review the need for this..
+    #print('\t%r' % (month,))
+    if timegm is not None:
+        tr = timegm((year, month, dom, h, min, sec, 0, 0, 0))  # CPython: mktime treats tuple as localtime :-( use calendar.timegm() or datetime(..., tzinfo=timezone.utc).timestamp()
+    else:
+        tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # MicroPython: mktime treats tuple as UTC, passing in unused 9th tuple for DST
+    return tr
 
 m_tuple = namedtuple('m', ('month', 'occur', 'day', 'hour', 'min', 'sec'))
 def parse_mstr(s):
@@ -82,7 +97,7 @@ def determine_change(p, year, offset):
     offset - offsets are seconds
     """
     if not p:
-        return time.mktime((year, 0, 0, 0, 0, 0, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the UTC / GMT0 time
+        return mktime((year, 0, 0, 0, 0, 0, 0, 0, 0))  # NOTE 9 params for CPython... 8 for MicroPython - this is the UTC / GMT0 time
     month, occur, day, h, min, sec = p
     min_offset = offset // 60
     h, min = (h - (min_offset // 60)), (min - (min_offset % 60))
@@ -105,10 +120,7 @@ def determine_change(p, year, offset):
     if dom > month_days[month - 1]:
         dom -= 7
 
-    if timegm is not None:
-        tr = timegm((year, month, dom, h, min, sec, 0, 0, 0))  # CPython: mktime treats tuple as localtime :-( use calendar.timegm() or datetime(..., tzinfo=timezone.utc).timestamp()
-    else:
-        tr = time.mktime((year, month, dom, h, min, sec, 0, 0, 0))  # MicroPython: mktime treats tuple as UTC, passing in unused 9th tuple for DST
+    tr = mktime((year, month, dom, h, min, sec, 0, 0, 0))
     return tr
 
 
