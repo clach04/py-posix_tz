@@ -23,6 +23,14 @@ def assert_equal(a, b, fatal=DEFAULT_FATAL):
             # TODO
             print('AssertionError! Carrying on to next test: %r' % (info,))
 
+def assert_equal_timetuple(a, b, fatal=DEFAULT_FATAL):
+    """For testing purposes make CPython struct a tuple, and restrict to 8 items (ignoreing 9th)
+    TODO revisiting item throwing away
+    """
+    tuple_a = (a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7])
+    tuple_b = (b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7])
+    assert_equal(tuple_a, tuple_b, fatal=fatal)
+
 def assert_is_none(a):
     assert a is None, '%r != %r' % (a, None)
 
@@ -123,8 +131,8 @@ class UsaLosAngeles(MyBaseTestCase):
         end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 10, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 9, 0, 0, 6, 306)
-        assert_equal(canon_end_date, end_date)
-        assert_equal(canon_start_date, start_date)
+        assert_equal_timetuple(canon_end_date, end_date)
+        assert_equal_timetuple(canon_start_date, start_date)
 
 class UsaLosAngeles_2am(UsaLosAngeles):
     def __init__(self):
@@ -149,8 +157,8 @@ class UsaNewYork(MyBaseTestCase):
         end_date = time.localtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
         canon_start_date = (2025, 3, 9, 7, 0, 0, 6, 68)
         canon_end_date = (2025, 11, 2, 6, 0, 0, 6, 306)
-        assert_equal(canon_end_date, end_date)
-        assert_equal(canon_start_date, start_date)
+        assert_equal_timetuple(canon_end_date, end_date)
+        assert_equal_timetuple(canon_start_date, start_date)
 
 class UsaNewYork_2am(MyBaseTestCase):
     def __init__(self):
