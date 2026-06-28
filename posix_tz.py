@@ -41,7 +41,10 @@ def parse_mstr(s):
     else:
         t = '2:00:00'
     month, occur, day = map(int, m[1:].split('.'))  # TODO catch non-int errors
-    h, min, sec = map(int, t.split(':'))  # TODO catch non-int errors
+    parts = t.split(':')
+    h = int(parts[0])
+    min = int(parts[1]) if len(parts) > 1 else 0
+    sec = int(parts[2]) if len(parts) > 2 else 0
     return m_tuple(month, occur, day, h, min, sec)
 
 def _parse_name_offset(s):

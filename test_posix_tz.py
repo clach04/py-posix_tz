@@ -296,6 +296,11 @@ class GermanyBerlin(MyBaseTestCase):
         assert_equal(0, tt[8])
         assert_equal('2025-01-01 01:00:00 CET', iso_like_str(tt, self.parsed))
 
+class GermanyBerlin_NoMins(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('CET-1CEST,M3.5.0,M10.5.0/3')
+
+
 class UtcTimeZone(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('UTC')
@@ -351,6 +356,11 @@ class UkLondon(MyBaseTestCase):
         tt = localtime(ts, self.parsed)
         assert_equal(0, tt[8])
         assert_equal('2025-01-01 00:00:00 GMT', iso_like_str(tt, self.parsed))
+
+class UkLondon_NoMins(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('GMT0BST,M3.5.0/1,M10.5.0')
+
 
 class UsaNewYork_TzList(MyBaseTestCase):
     def __init__(self):
@@ -460,8 +470,10 @@ for test_class in (  # FIXME, automate this
     ChinaStandardTime,
     IndiaStandardTime,
     GermanyBerlin,
+    GermanyBerlin_NoMins,
     UtcTimeZone,
     UkLondon,
+    UkLondon_NoMins,
     UsaNewYork_TzList,
     UsaTexas,
     UsaLosAngeles_TzList,
