@@ -63,11 +63,11 @@ from posix_tz import global_tzd, iso_like_str, parse_tz, set_tz, tzd_tuple
 tz_list = [
     'CST-8',  # China Standard Time
     'IST-5:30',  # India Standard Time
-    #'CET-1CEST,M3.5.0,M10.5.0/3',  # Germany, Berlin  # FIXME
-    'CET-1CEST,M3.5.0,M10.5.0/3:00:00',  # Germany, Berlin
+    'CET-1CEST,M3.5.0,M10.5.0/3',  # Germany, Berlin - standard expected rule
+    'CET-1CEST,M3.5.0,M10.5.0/3:00:00',  # Germany, Berlin - full mins spec
     'UTC',  # Coordinated Universal Time (UTC) / GMT0
-    #'GMT0BST,M3.5.0/1,M10.5.0', # UK, London  # FIXME
-    'GMT0BST,M3.5.0/1:00:00,M10.5.0/1:00:00', # UK, London  # FIXME
+    'GMT0BST,M3.5.0/1,M10.5.0', # UK, London - standard expected rule
+    'GMT0BST,M3.5.0/1:00:00,M10.5.0/1:00:00', # UK, London  - full mins spec
     'EST5EDT,M3.2.0,M11.1.0',  # USA/New York - 'EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00'
     'CST6CDT,M3.2.0,M11.1.0',  # USA/Texas
     'PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00',  # USA/Los Angeles
@@ -95,7 +95,6 @@ for t in t_list:
     for tz in tzs:
         print(iso_like_str(localtime(n=tt, tzd=tz), tzd=tz))
     print('')
-
 ```
 
 ## MicroPython WASM Usage
