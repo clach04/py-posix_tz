@@ -112,7 +112,7 @@ class IndiaOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
-class UsaLosAngelesOffsets(MyBaseTestCase):
+class UsaLosAngeles(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
@@ -121,10 +121,6 @@ class UsaLosAngelesOffsets(MyBaseTestCase):
 
     def test_dstoffset(self):
         assert_equal(-7 * 60 * 60, self.parsed.dst_offset)
-
-class UsaLosAngeles(MyBaseTestCase):
-    def __init__(self):
-        self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
 
     def test_2025(self):
         start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
@@ -182,7 +178,6 @@ for test_class in (  # FIXME, automate this
     GmtZeroOffsets,
     GmtMinusZeroOffsets,
     GmtPlusZeroOffsets,
-    UsaLosAngelesOffsets,
     UsaLosAngeles,
     UsaLosAngeles_2am,
     UsaLosAngeles_2am_end_only,
