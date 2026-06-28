@@ -210,6 +210,7 @@ class UsaLosAngeles_2am_end_only(UsaLosAngeles):
 
 
 GMT_TUPLE_2026_06_28__19_44_14 = (2026, 6, 28, 19, 44, 14, 6, 179, 0)
+GMT_TUPLE_2025_01_01__00_00_00 = (2025, 1, 1, 0, 0, 0, 2, 1, 0)
 
 class ChinaStandardTime(MyBaseTestCase):
     def __init__(self):
@@ -233,6 +234,12 @@ class ChinaStandardTime(MyBaseTestCase):
         assert_equal(0, tt[8])
         assert_equal('2026-06-29 03:44:14 CST', iso_like_str(tt, self.parsed))
 
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2025-01-01 08:00:00 CST', iso_like_str(tt, self.parsed))
+
 class IndiaStandardTime(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('IST-5:30')
@@ -254,6 +261,12 @@ class IndiaStandardTime(MyBaseTestCase):
         tt = localtime(ts, self.parsed)
         assert_equal(0, tt[8])
         assert_equal('2026-06-29 01:14:14 IST', iso_like_str(tt, self.parsed))
+
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2025-01-01 05:30:00 IST', iso_like_str(tt, self.parsed))
 
 class GermanyBerlin(MyBaseTestCase):
     def __init__(self):
@@ -277,6 +290,12 @@ class GermanyBerlin(MyBaseTestCase):
         assert_equal(1, tt[8])
         assert_equal('2026-06-28 21:44:14 CEST', iso_like_str(tt, self.parsed))
 
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2025-01-01 01:00:00 CET', iso_like_str(tt, self.parsed))
+
 class UtcTimeZone(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('UTC')
@@ -298,6 +317,12 @@ class UtcTimeZone(MyBaseTestCase):
         tt = localtime(ts, self.parsed)
         assert_equal(0, tt[8])
         assert_equal('2026-06-28 19:44:14 UTC', iso_like_str(tt, self.parsed))
+
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2025-01-01 00:00:00 UTC', iso_like_str(tt, self.parsed))
 
 class UkLondon(MyBaseTestCase):
     def __init__(self):
@@ -321,6 +346,12 @@ class UkLondon(MyBaseTestCase):
         assert_equal(1, tt[8])
         assert_equal('2026-06-28 20:44:14 BST', iso_like_str(tt, self.parsed))
 
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2025-01-01 00:00:00 GMT', iso_like_str(tt, self.parsed))
+
 class UsaNewYork_TzList(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
@@ -342,6 +373,12 @@ class UsaNewYork_TzList(MyBaseTestCase):
         tt = localtime(ts, self.parsed)
         assert_equal(1, tt[8])
         assert_equal('2026-06-28 15:44:14 EDT', iso_like_str(tt, self.parsed))
+
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2024-12-31 19:00:00 EST', iso_like_str(tt, self.parsed))
 
 class UsaTexas(MyBaseTestCase):
     def __init__(self):
@@ -365,6 +402,12 @@ class UsaTexas(MyBaseTestCase):
         assert_equal(1, tt[8])
         assert_equal('2026-06-28 14:44:14 CDT', iso_like_str(tt, self.parsed))
 
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2024-12-31 18:00:00 CST', iso_like_str(tt, self.parsed))
+
 class UsaLosAngeles_TzList(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
@@ -386,6 +429,12 @@ class UsaLosAngeles_TzList(MyBaseTestCase):
         tt = localtime(ts, self.parsed)
         assert_equal(1, tt[8])
         assert_equal('2026-06-28 12:44:14 PDT', iso_like_str(tt, self.parsed))
+
+    def test_localtime_jan2025(self):
+        ts = mktime(GMT_TUPLE_2025_01_01__00_00_00)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2024-12-31 16:00:00 PST', iso_like_str(tt, self.parsed))
 
 """
 for x in dir():
