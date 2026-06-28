@@ -6,7 +6,6 @@ time.localtime() / time.gmtime() is tuple in Micropython, struct/class/namedtupl
 """
 
 from collections import namedtuple
-import re
 import time
 try:
     from calendar import timegm
@@ -45,35 +44,64 @@ def parse_mstr(s):
     h, min, sec = map(int, t.split(':'))  # TODO catch non-int errors
     return m_tuple(month, occur, day, h, min, sec)
 
-name_offset_re = re.compile(r"^([A-Z]+)([+-]?)(\d+)(?::(\d+))?(?::(\d+))?")  # TODO revisit this
+def _parse_name_offset(s):
+    """Parse POSIX TZ name+offset portion, e.g. 'PST8PDT' or 'IST-5:30'
+    Returns (name, sign, hour, min, sec, dst_name)
+    """
+    i = 0
+    n = len(s)
+
+    start = i
+    while i < n and s[i].isalpha():
+        i += 1
+    name = s[start:i]
+
+    sign = ''
+    if i < n and s[i] in '+-':
+        sign = s[i]
+        i += 1
+
+    start = i
+    while i < n and s[i].isdigit():
+        i += 1
+    hour = int(s[start:i]) if i > start else 0
+
+    min_val = 0
+    sec_val = 0
+    if i < n and s[i] == ':':
+        i += 1
+        start = i
+        while i < n and s[i].isdigit():
+            i += 1
+        min_val = int(s[start:i]) if i > start else 0
+
+    if i < n and s[i] == ':':
+        i += 1
+        start = i
+        while i < n and s[i].isdigit():
+            i += 1
+        sec_val = int(s[start:i]) if i > start else 0
+
+    dst_name = s[i:]
+
+    return name, sign, hour, min_val, sec_val, dst_name
+
 # timezone details tuple
 tzd_tuple = namedtuple('tzd', ('name', 'offset', 'dst_name', 'start', 'end', 'dst_offset'))  # offsets are seconds
 def parse_tz(s):
-    #import pdb; pdb.set_trace()
     ss = s.split(',')
     if len(ss) == 1:
-        # no DST
-        #import pdb; pdb.set_trace()
-        x = re.match(name_offset_re, s)
-        if x:
-            #tzname, sign, d_hour, d_min, d_sec = re.match(name_offset_re, s).groups(default=0)  # Cpython
-            tzname, sign, d_hour, d_min, d_sec = x.group(1), x.group(2), x.group(3) or 0, x.group(4) or 0, x.group(5) or 0  # micropython
-            offset = (int(d_hour) * 60 + int(d_min)) * 60 + int(d_sec)
-            timezone = offset * (1 if sign == "-" else -1)
-        else:
-            tzname = s
-            timezone = 0
-        return tzd_tuple(tzname, timezone, tzname, None, None, None)
-    if len(ss) == 3:
-        # FIXME refactor, remove duplication
-        x = re.match(name_offset_re, ss[0])
-        tzname, sign, d_hour, d_min, d_sec = x.group(1), x.group(2), x.group(3) or 0, x.group(4) or 0, x.group(5) or 0  # micropython
-        offset = (int(d_hour) * 60 + int(d_min)) * 60 + int(d_sec)
+        tzname, sign, d_hour, d_min, d_sec, dst_name = _parse_name_offset(s)
+        offset = (d_hour * 60 + d_min) * 60 + d_sec
         timezone = offset * (1 if sign == "-" else -1)
-        # TODO parse DST name and offset, for now default
-        return tzd_tuple(tzname, timezone, '?DST?', parse_mstr(ss[1]), parse_mstr(ss[2]), timezone + 1 * 60 * 60)
+        return tzd_tuple(tzname, timezone, dst_name, None, None, None)
+    if len(ss) == 3:
+        tzname, sign, d_hour, d_min, d_sec, dst_name = _parse_name_offset(ss[0])
+        offset = (d_hour * 60 + d_min) * 60 + d_sec
+        timezone = offset * (1 if sign == "-" else -1)
+        return tzd_tuple(tzname, timezone, dst_name, parse_mstr(ss[1]), parse_mstr(ss[2]), timezone + 1 * 60 * 60)
     else:
-        NotImplementedError('FIXME for %r)' %s)
+        NotImplementedError('FIXME for %r)' % s)
 
 def determine_change(p, year, offset):
     """

@@ -62,6 +62,9 @@ class UtcOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
 class GmtOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT')
@@ -71,6 +74,9 @@ class GmtOffsets(MyBaseTestCase):
 
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
 
 class GmtZeroOffsets(MyBaseTestCase):
     def __init__(self):
@@ -82,6 +88,9 @@ class GmtZeroOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
 class GmtMinusZeroOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT-0')
@@ -91,6 +100,9 @@ class GmtMinusZeroOffsets(MyBaseTestCase):
 
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
+
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
 
 class GmtPlusZeroOffsets(MyBaseTestCase):
     def __init__(self):
@@ -102,6 +114,9 @@ class GmtPlusZeroOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
 class IndiaOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('IST-5:30')
@@ -112,6 +127,9 @@ class IndiaOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_is_none(self.parsed.dst_offset)  # TODO revisit this
 
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
 class UsaLosAngeles(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
@@ -121,6 +139,9 @@ class UsaLosAngeles(MyBaseTestCase):
 
     def test_dstoffset(self):
         assert_equal(-7 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('PDT', self.parsed.dst_name)
 
     def test_2025(self):
         start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
@@ -143,6 +164,9 @@ class UsaNewYork(MyBaseTestCase):
 
     def test_dstoffset(self):
         assert_equal(-4 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('EDT', self.parsed.dst_name)
 
     def test_2025(self):
         start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
