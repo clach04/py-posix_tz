@@ -179,9 +179,10 @@ def localtime(n=None, tzd=None):
             n += tzd.offset
     # else assume UTC/GMT0
     tt = time.gmtime(n)
-    # make a 9-tuple
     if len(tt) == 8:
         tt += (tm_isdst,)
+    else:
+        tt = tuple(list(tt)[:8] + [tm_isdst])
     return tt
 
 def iso_like_str(tt=None, tzd=None, include_tz_if_available=True):
