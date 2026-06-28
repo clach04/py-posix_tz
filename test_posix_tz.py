@@ -138,7 +138,7 @@ class UsaLosAngeles_2am(UsaLosAngeles):
     def __init__(self):
         self.parsed = parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
 
-class UsaNewYorkOffsets(MyBaseTestCase):
+class UsaNewYork(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
 
@@ -148,10 +148,6 @@ class UsaNewYorkOffsets(MyBaseTestCase):
     def test_dstoffset(self):
         assert_equal(-4 * 60 * 60, self.parsed.dst_offset)
 
-class UsaNewYork(MyBaseTestCase):
-    def __init__(self):
-        self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
-
     def test_2025(self):
         start_date = time.gmtime(determine_change(self.parsed.start, 2025, self.parsed.offset))
         end_date = time.gmtime(determine_change(self.parsed.end, 2025, self.parsed.dst_offset))
@@ -160,7 +156,7 @@ class UsaNewYork(MyBaseTestCase):
         assert_equal_timetuple(canon_end_date, end_date)
         assert_equal_timetuple(canon_start_date, start_date)
 
-class UsaNewYork_2am(MyBaseTestCase):
+class UsaNewYork_2am(UsaNewYork):
     def __init__(self):
         self.parsed = parse_tz('EST5EDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
 
@@ -191,7 +187,6 @@ for test_class in (  # FIXME, automate this
     UsaLosAngeles_2am,
     UsaLosAngeles_2am_end_only,
     IndiaOffsets,
-    UsaNewYorkOffsets,
     UsaNewYork,
     UsaNewYork_2am,
     ):
