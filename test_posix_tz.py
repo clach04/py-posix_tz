@@ -3,7 +3,8 @@
 
 import time
 
-from posix_tz import determine_change, parse_tz, localtime, iso_like_str, mktime
+from posix_tz import localtime, mktime  # NOTE overrides compared with CPython time stdlib
+from posix_tz import determine_change, parse_tz, iso_like_str
 
 DEFAULT_FATAL = True
 DEFAULT_FATAL = False  # Debug!
