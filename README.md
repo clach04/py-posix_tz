@@ -31,7 +31,7 @@ print('global_tzd %r' % (global_tzd,))
 print('localtime() %r' % (localtime(),))
 ```
 
-Show two timezones
+### Demo Show Two Timezones
 
 ```python
 import time
@@ -51,7 +51,7 @@ print('time.localtime() %r' % (time.localtime(tt),))
 print('time.gmtime() %r' % (time.gmtime(tt),))
 ```
 
-Simple world clock.
+### Demo Simple World Clock
 
 ```python
 import time
