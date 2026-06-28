@@ -3,7 +3,7 @@
 
 import time
 
-from posix_tz import determine_change, parse_tz
+from posix_tz import determine_change, parse_tz, localtime, iso_like_str, mktime
 
 DEFAULT_FATAL = True
 DEFAULT_FATAL = False  # Debug!
@@ -209,7 +209,183 @@ class UsaLosAngeles_2am_end_only(UsaLosAngeles):
         self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0/2:00:00')
 
 
-# TODO test posix_tz.localtime()
+GMT_TUPLE = (2026, 6, 28, 19, 44, 14, 6, 179, 0)
+
+class ChinaStandardTime(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('CST-8')
+
+    def test_name(self):
+        assert_equal('CST', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(8 * 60 * 60, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2026-06-29 03:44:14 CST', iso_like_str(tt, self.parsed))
+
+class IndiaStandardTime(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('IST-5:30')
+
+    def test_name(self):
+        assert_equal('IST', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(19800, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2026-06-29 01:14:14 IST', iso_like_str(tt, self.parsed))
+
+class GermanyBerlin(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('CET-1CEST,M3.5.0,M10.5.0/3:00:00')
+
+    def test_name(self):
+        assert_equal('CET', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(1 * 60 * 60, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_equal(2 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('CEST', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(1, tt[8])
+        assert_equal('2026-06-28 21:44:14 CEST', iso_like_str(tt, self.parsed))
+
+class UtcTimeZone(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('UTC')
+
+    def test_name(self):
+        assert_equal('UTC', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_is_none(self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(0, tt[8])
+        assert_equal('2026-06-28 19:44:14 UTC', iso_like_str(tt, self.parsed))
+
+class UkLondon(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('GMT0BST,M3.5.0/1:00:00,M10.5.0/1:00:00')
+
+    def test_name(self):
+        assert_equal('GMT', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(0, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_equal(1 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('BST', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(1, tt[8])
+        assert_equal('2026-06-28 20:44:14 BST', iso_like_str(tt, self.parsed))
+
+class UsaNewYork_TzList(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
+
+    def test_name(self):
+        assert_equal('EST', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(-5 * 60 * 60, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_equal(-4 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('EDT', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(1, tt[8])
+        assert_equal('2026-06-28 15:44:14 EDT', iso_like_str(tt, self.parsed))
+
+class UsaTexas(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('CST6CDT,M3.2.0,M11.1.0')
+
+    def test_name(self):
+        assert_equal('CST', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(-6 * 60 * 60, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_equal(-5 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('CDT', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(1, tt[8])
+        assert_equal('2026-06-28 14:44:14 CDT', iso_like_str(tt, self.parsed))
+
+class UsaLosAngeles_TzList(MyBaseTestCase):
+    def __init__(self):
+        self.parsed = parse_tz('PST8PDT,M3.2.0/2:00:00,M11.1.0/2:00:00')
+
+    def test_name(self):
+        assert_equal('PST', self.parsed.name)
+
+    def test_offset(self):
+        assert_equal(-8 * 60 * 60, self.parsed.offset)
+
+    def test_dstoffset(self):
+        assert_equal(-7 * 60 * 60, self.parsed.dst_offset)
+
+    def test_dst_name(self):
+        assert_equal('PDT', self.parsed.dst_name)
+
+    def test_localtime(self):
+        ts = mktime(GMT_TUPLE)
+        tt = localtime(ts, self.parsed)
+        assert_equal(1, tt[8])
+        assert_equal('2026-06-28 12:44:14 PDT', iso_like_str(tt, self.parsed))
 
 """
 for x in dir():
@@ -232,6 +408,14 @@ for test_class in (  # FIXME, automate this
     IndiaOffsets,
     UsaNewYork,
     UsaNewYork_2am,
+    ChinaStandardTime,
+    IndiaStandardTime,
+    GermanyBerlin,
+    UtcTimeZone,
+    UkLondon,
+    UsaNewYork_TzList,
+    UsaTexas,
+    UsaLosAngeles_TzList,
     ):
         x = test_class()
         x.run()
