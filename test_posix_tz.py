@@ -56,6 +56,9 @@ class UtcOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('UTC')
 
+    def test_name(self):
+        assert_equal('UTC', self.parsed.name)
+
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
 
@@ -68,6 +71,9 @@ class UtcOffsets(MyBaseTestCase):
 class GmtOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT')
+
+    def test_name(self):
+        assert_equal('GMT', self.parsed.name)
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -82,6 +88,9 @@ class GmtZeroOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT0')
 
+    def test_name(self):
+        assert_equal('GMT', self.parsed.name)
+
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
 
@@ -94,6 +103,9 @@ class GmtZeroOffsets(MyBaseTestCase):
 class GmtMinusZeroOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT-0')
+
+    def test_name(self):
+        assert_equal('GMT', self.parsed.name)
 
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
@@ -108,6 +120,9 @@ class GmtPlusZeroOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('GMT+0')
 
+    def test_name(self):
+        assert_equal('GMT', self.parsed.name)
+
     def test_offset(self):
         assert_equal(0, self.parsed.offset)
 
@@ -121,6 +136,9 @@ class IndiaOffsets(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('IST-5:30')
 
+    def test_name(self):
+        assert_equal('IST', self.parsed.name)
+
     def test_offset(self):
         assert_equal(19800, self.parsed.offset)
 
@@ -133,6 +151,9 @@ class IndiaOffsets(MyBaseTestCase):
 class UsaLosAngeles(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('PST8PDT,M3.2.0,M11.1.0')
+
+    def test_name(self):
+        assert_equal('PST', self.parsed.name)
 
     def test_offset(self):
         assert_equal(-8 * 60 * 60, self.parsed.offset)
@@ -158,6 +179,9 @@ class UsaLosAngeles_2am(UsaLosAngeles):
 class UsaNewYork(MyBaseTestCase):
     def __init__(self):
         self.parsed = parse_tz('EST5EDT,M3.2.0,M11.1.0')
+
+    def test_name(self):
+        assert_equal('EST', self.parsed.name)
 
     def test_offset(self):
         assert_equal(-5 * 60 * 60, self.parsed.offset)
