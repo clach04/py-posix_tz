@@ -89,7 +89,9 @@ for t in t_list:
         tt = mktime(time.gmtime())
     print(t)
     print(tt)
-    print(time.gmtime(tt))
+    t_new = time.gmtime(tt)
+    print(t_new)
+    print((t_new[0], t_new[1], t_new[2], t_new[3], t_new[4], t_new[5], t_new[6], t_new[7], t_new[8]))
     for tz in tzs:
         print(iso_like_str(localtime(n=tt, tzd=tz), tzd=tz))
     print('')
