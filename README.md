@@ -4,9 +4,11 @@ Python / MicroPython package for processing POSIX TZ names/rules for localtime()
 
 https://github.com/clach04/py-posix_tz
 
-Primarily focused on MicroPython where memory/storage is restricted. If you have a full Python implementation (like CPython, etc.) use an IANA timezone API instead.
+Primarily focused on MicroPython where memory/storage is restricted. If you have a full Python implementation (like CPython, etc.) use an IANA timezone API instead. CPython support is intended for easier testing.
 
 The timezone support that POSIX TZ offers (in general, not specifically about this package) is limited to now and the future. It has no idea about previous rules, there is only one rule. If new rules for a timezone are created, a new TZ will need to be created and deployed.
+
+Also see https://github.com/clach04/microtz for a similar C project.
 
 ## MicroPython Usage
 
